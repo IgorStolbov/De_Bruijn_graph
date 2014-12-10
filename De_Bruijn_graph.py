@@ -25,9 +25,13 @@ class bitnode:
 
 class DBgraph:
     G=nx.MultiGraph()
-    for i in range(0,2**n):
-        G.add_node(bitnode(i))
     def build(self):
+        G = self.G
+        for i in range(2**n):
+            G.add_node(bitnode(i))
+        for i in G:
+            G.add_edge(i, i.mult(m))
+            G.add_edge(i, (i.mult(m)).sum(a))
         return
     def show(self):
         return
