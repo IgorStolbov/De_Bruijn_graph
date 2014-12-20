@@ -65,6 +65,10 @@ def diffusion(G_original):
             v = randint(0, 2 ** n - 1)
         weights[v] = 0.5 / n
 
+    pos=nx.graphviz_layout(G)
+    nx.draw_networkx_nodes(G, pos, node_size=80, node_color=weights, cmap=plt.cm.Reds_r)
+    plt.show()
+
     iter = 0
     while iter < NUMBER_OF_ITERATIONS:
         for v, nbrdict in G.adjacency_iter():
@@ -78,7 +82,6 @@ def diffusion(G_original):
         iter += 1
 
         # drawing
-        pos=nx.graphviz_layout(G)
         nx.draw_networkx_nodes(G, pos, node_size=80, node_color=weights, cmap=plt.cm.Reds_r)
         plt.show()
 
