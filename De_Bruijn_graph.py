@@ -5,23 +5,21 @@ from random import randint
 import pygraphviz
 
 NUMBER_OF_NEIGHBOURS = 2
-NUMBER_OF_ITERATIONS = 50
+NUMBER_OF_ITERATIONS = 60
 
 n = 12
 m = 2
 a = 2
 
-def game_of_life(G_original):
+def game_of_life(G, pos):
     print 'game of life'
-    G = G_original.copy()
     is_alive = []
     for i in range(0, 2 ** n):
         is_alive.append(True)
     anybody_is_alive = True
 
-    # nx.draw_networkx(G, edgelist=[])
-    pos=nx.graphviz_layout(G)
-    nx.draw_networkx_nodes(G, pos, node_size=80)
+    # pos=nx.graphviz_layout(G)
+    nx.draw_networkx_nodes(G, pos, node_size=70)
     plt.show()
     while anybody_is_alive:
         # kill or raise from dead
@@ -45,16 +43,14 @@ def game_of_life(G_original):
             anybody_is_alive = False
         else:
             # print alives
-            nx.draw_networkx_nodes(G, pos, nodelist=alives, node_size=80)
-            # nx.draw_networkx(G, edgelist=[], nodelist=alives)
+            nx.draw_networkx_nodes(G, pos, nodelist=alives, node_size=70)
             plt.show()
 
-def diffusion(G_original):
+def diffusion(G, pos):
     print 'diffusion'
-    G = G_original.copy()
 
-    # here we distrube 0.5 between n vertexes out of 2 ** n
-    # and 0.5 between the rest
+    # here we distrube 1 between 2 ** n - n vertexes out of 2 ** n
+    # and weights of the rests are nulls
     weights = []
     for i in range(0, 2 ** n):
         weights.append(1.0 / (2 ** n - n))
@@ -65,24 +61,23 @@ def diffusion(G_original):
             v = randint(0, 2 ** n - 1)
         weights[v] = 0.0
 
-    pos=nx.graphviz_layout(G)
-    nx.draw_networkx_nodes(G, pos, node_size=80, node_color=weights, cmap=plt.cm.Reds_r)
+    # pos=nx.graphviz_layout(G)
+    nx.draw_networkx_nodes(G, pos, node_size=70, node_color=weights, cmap=plt.cm.Reds_r)
     plt.show()
 
     iter = 0
     while iter < NUMBER_OF_ITERATIONS:
+        temp_weights = [None] * (2 ** n)
         for v, nbrdict in G.adjacency_iter():
             counter = 1
             weight = weights[v]
             for neighbour in nbrdict:
-                # print type(neighbour)
                 weight += weights[neighbour]
                 counter += 1
-            weights[v] = weight / counter
+            temp_weights[v] = weight / counter
+        weights = temp_weights
         iter += 1
-
-        # drawing
-        nx.draw_networkx_nodes(G, pos, node_size=80, node_color=weights, cmap=plt.cm.Reds_r)
+        nx.draw_networkx_nodes(G, pos, node_size=70, node_color=weights, cmap=plt.cm.Reds_r)
         plt.show()
 
 
@@ -112,10 +107,12 @@ def main():
         b = mult(i, m)
         G.add_edge(i, b)
         G.add_edge(i, a^b)
-    print 'graph was built'
 
-    diffusion(G)
-    game_of_life(G)
+    print 'graph was built'
+    pos=nx.graphviz_layout(G)
+
+    diffusion(G, pos)
+    game_of_life(G, pos)
     
 
     return
