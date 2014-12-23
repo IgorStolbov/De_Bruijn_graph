@@ -1,13 +1,11 @@
 import networkx as nx
 from numpy import *
-# import graphviz as gv
-# from networkx_viewer import Viewer
 import matplotlib.pyplot as plt
 from random import randint
 import pygraphviz
 
-NUMBER_OF_NEIGHBOURS = 3
-NUMBER_OF_ITERATIONS = 10
+NUMBER_OF_NEIGHBOURS = 2
+NUMBER_OF_ITERATIONS = 20
 
 n = 8
 m = 2
@@ -45,8 +43,8 @@ def game_of_life(G_original):
         if i == len(is_alive):
             anybody_is_alive = False
         else:
-            nx.draw_networkx_nodes(G, pos, node_list=alives, node_size=80)
-            # not only alives vertexes are showed but deads as well
+            # print alives
+            nx.draw_networkx_nodes(G, pos, nodelist=alives, node_size=80)
             # nx.draw_networkx(G, edgelist=[], nodelist=alives)
             plt.show()
 
@@ -57,13 +55,13 @@ def diffusion(G_original):
     # and 0.5 between the rest
     weights = []
     for i in range(0, 2 ** n):
-        weights.append(0.5 / (2 ** n - n))
+        weights.append(1.0 / (2 ** n - n))
 
     for i in range(0, n):
         v = randint(0, 2 ** n - 1)
-        while (weights[v] != 0.5 / (2 ** n - n)):
+        while (weights[v] != 1.0 / (2 ** n - n)):
             v = randint(0, 2 ** n - 1)
-        weights[v] = 0.5 / n
+        weights[v] = 0.0
 
     pos=nx.graphviz_layout(G)
     nx.draw_networkx_nodes(G, pos, node_size=80, node_color=weights, cmap=plt.cm.Reds_r)
@@ -113,14 +111,9 @@ def main():
         G.add_edge(i, b)
         G.add_edge(i, a^b)
 
-    # game_of_life(G)
-    diffusion(G)
-    # nx.draw_networkx(G)
-    # nx.draw_networkx(G, edgelist = [])
-    # nx.draw(G,pos=nx.spectral_layout(G), nodecolor='r',edge_color='b')
-    # plt.show()
-    # app = Viewer(G)
-    # app.mainloop()
+    game_of_life(G)
+    # diffusion(G)
+
     return
 
 main()
