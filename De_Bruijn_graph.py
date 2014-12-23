@@ -5,13 +5,14 @@ from random import randint
 import pygraphviz
 
 NUMBER_OF_NEIGHBOURS = 2
-NUMBER_OF_ITERATIONS = 20
+NUMBER_OF_ITERATIONS = 50
 
-n = 8
+n = 12
 m = 2
 a = 2
 
 def game_of_life(G_original):
+    print 'game of life'
     G = G_original.copy()
     is_alive = []
     for i in range(0, 2 ** n):
@@ -49,6 +50,7 @@ def game_of_life(G_original):
             plt.show()
 
 def diffusion(G_original):
+    print 'diffusion'
     G = G_original.copy()
 
     # here we distrube 0.5 between n vertexes out of 2 ** n
@@ -93,7 +95,7 @@ def mult(a, b):
         carry = a & (2**(n-1))  # detect if x^n term is about to be generated
         a <<= 1
         if carry:
-            a ^= 0x1B #replace x^20 with x^3 + 1 # or 3
+            a ^= 0x53 #0x1B #replace x^20 with x^3 + 1 # or 3
         b >>= 1
     start = 2
     size = len(bin(result))
@@ -110,9 +112,11 @@ def main():
         b = mult(i, m)
         G.add_edge(i, b)
         G.add_edge(i, a^b)
+    print 'graph was built'
 
+    diffusion(G)
     game_of_life(G)
-    # diffusion(G)
+    
 
     return
 
